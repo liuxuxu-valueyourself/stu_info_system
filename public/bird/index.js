@@ -68,7 +68,7 @@ function isRunInfo() {
     if (
       Math.abs(pipeXCenter - 218) < 44 &&
       Math.abs(pipeYCenter - (resTop + 12)) <
-      Math.floor((pipeArr[i].height + 24) / 2)
+        Math.floor((pipeArr[i].height + 24) / 2)
     ) {
       gameOver();
     }

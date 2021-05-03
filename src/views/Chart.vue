@@ -79,11 +79,11 @@ export default {
       let data1 = []; // 住址
       let data2 = []; // 男女生
       let data3 = []; // 年龄
-      res.data.map((item) => {
+      res.data.map(item => {
         let hasAddress = false;
         let hasSex = false;
         let hasAge = false;
-        data1.map((item2) => {
+        data1.map(item2 => {
           // 住址1
           if (item.address === item2.address) {
             hasAddress = true;
@@ -97,7 +97,7 @@ export default {
           });
         }
 
-        data2.map((item2) => {
+        data2.map(item2 => {
           // 性别2
           if (item.sex == item2.sex) {
             hasSex = true;
@@ -111,7 +111,7 @@ export default {
           });
         }
         // 年龄3
-        data3.map((item2) => {
+        data3.map(item2 => {
           if (item.age == item2.age) {
             hasAge = true;
             item2["人数"]++;
