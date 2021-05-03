@@ -187,8 +187,11 @@ export default {
         .then(res => {
           if (res.data == 1 && res.status == 200) {
             this.$message.success("新增学生成功");
+            this.$router.push({
+              name:'Home'
+            })
           } else {
-            this.$message.warning("新增学生失败 提示:学号要唯一");
+            this.$message.warning("新增学生失败 提示:学号要唯一或格式有误");
           }
           if (res.status != 200) {
             this.$message.error("新增学生失败");

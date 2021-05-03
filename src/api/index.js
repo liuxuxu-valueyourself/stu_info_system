@@ -53,6 +53,19 @@ export async function getDataSex(sex) {
 }
 
 // 提交修改数据
+export async function getClassByInfo(classInfo) {
+  let res = await axios({
+    method: "post",
+    url: "/test/index.php",
+    data: {
+      type: "class",
+      classInfo
+    }
+  });
+  return res;
+}
+
+// 提交修改数据
 export async function editData(option) {
   let res = await axios({
     method: "post",

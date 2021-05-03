@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import md5 from 'js-md5';
 import Mantle from "../components/Mantle.vue";
 import { login } from "../api/index.js"; // 引入api接口模块
 export default {
@@ -56,11 +57,12 @@ export default {
       } else if (this.userPassword === "") {
         this.$message.warning("密码不能为空!");
       } else {
+        let md5Password = md5(this.userPassword);
         //进行登录
         let res = await login({
           // 调用login api接口，将数据发送到后台
           name: this.userName,
-          password: this.userPassword
+          password: md5Password
         });
         if (res.data === 0) {
           // 判断数据空值是否存在该用户信息 如果有判断是否为超级管理员
@@ -79,6 +81,7 @@ export default {
             name: "Home"
           });
           localStorage.setItem("userName", this.userName);
+          localStorage.setItem("root", true);
         } else if (res.data === 2) {
           this.$message.success("登录成功!");
           this.$store.commit("changeName", {
@@ -92,6 +95,7 @@ export default {
             name: "Home"
           });
           localStorage.setItem("userName", this.userName);
+          localStorage.setItem("root", false);
         }
       }
     },

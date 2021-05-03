@@ -31,6 +31,7 @@ import MainTop from "./components/MainTop.vue";
 import { mapState } from "vuex";
 
 const userName = localStorage.getItem("userName");
+const root = localStorage.getItem("root");
 
 export default {
   components: {
@@ -42,11 +43,15 @@ export default {
   },
   mounted() {
     if (!userName) {
-      console.log("OK");
       this.$router.push({
         name: "Login"
       });
       return;
+    }
+    if(root && userName) {
+      this.$store.commit("changeRoot", {
+      root: true
+    });
     }
     this.$store.commit("changeName", {
       name: userName

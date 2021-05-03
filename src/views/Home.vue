@@ -15,6 +15,9 @@
           <a-menu-item>
             <a href="javascript:;" @click="handleType(2)">按姓别查询</a>
           </a-menu-item>
+          <a-menu-item>
+            <a href="javascript:;" @click="handleType(3)">按班级查询</a>
+          </a-menu-item>
         </a-menu>
       </a-dropdown>
       <a-input-search
@@ -32,6 +35,7 @@
         <th :style="{ background: themeColor.background }">学号</th>
         <th :style="{ background: themeColor.background }">姓名</th>
         <th :style="{ background: themeColor.background }">性别</th>
+        <th :style="{ background: themeColor.background }">班级</th>
         <th :style="{ background: themeColor.background }">邮箱</th>
         <th :style="{ background: themeColor.background }">年龄</th>
         <th :style="{ background: themeColor.background }">手机号</th>
@@ -48,6 +52,7 @@
         <td :style="{ background: themeColor.background }">
           {{ item.sex == 0 ? "男" : "女" }}
         </td>
+        <td :style="{ background: themeColor.background }">{{ item.class }}</td>
         <td :style="{ background: themeColor.background }">{{ item.email }}</td>
         <td :style="{ background: themeColor.background }">{{ item.age }}</td>
         <td :style="{ background: themeColor.background }">{{ item.phone }}</td>
@@ -56,13 +61,13 @@
         </td>
         <td :style="{ background: themeColor.background }">{{ item.time }}</td>
         <td :style="{ background: themeColor.background }">
-          <a-button type="primary" @click="edit(item)"> 编辑 </a-button>
+          <a-button type="primary" @click="edit(item)"> <a-icon type="form" /> </a-button>
           <a-button
             type="danger"
             @click="showDeleteConfirm(item.id, item.name)"
             :disabled="!root"
           >
-            删除
+            <a-icon type="delete" />
           </a-button>
         </td>
       </tr>
@@ -70,7 +75,7 @@
 
     <a-modal
       v-model="visible"
-      :dialog-style="{ top: '20px' }"
+      :dialog-style="{ top: '20px', color: themeColor.color }"
       title="编辑"
       ok-text=""
       cancel-text=""
@@ -98,7 +103,8 @@ import {
   editData,
   getDataNum,
   getDataName,
-  getDataSex
+  getDataSex,
+  getClassByInfo
 } from "../api/index.js";
 import FormVal from "../components/FormValidation.vue";
 import { mapState } from "vuex";
@@ -139,9 +145,13 @@ export default {
     ...mapState(["root", "themeColor"])
   },
   methods: {
-    // 这里是异步 但是看起来像同步代码哦 async await
     async getAllData() {
       let res = await getData();
+      res.data.sort((a,b)=> {
+        let aTime = new Date(a.time).getTime();
+        let bTime = new Date(b.time).getTime();
+        return bTime - aTime;
+      })
       this.allData = res.data.length;
       this.dataItem = res.data;
       this.getNowData(this.now);
@@ -149,18 +159,23 @@ export default {
     handleType(index) {
       if (index === 0) {
         this.type = "当前按学号查询";
-        this.placeholder = "请输入学号查询";
+        this.placeholder = "请输入 学号 进行查询";
         this.index = 0;
       }
       if (index === 1) {
         this.type = "当前按姓名查询";
-        this.placeholder = "请输入姓名查询";
+        this.placeholder = "请输入 姓名 进行查询";
         this.index = 1;
       }
       if (index === 2) {
         this.type = "当前按性别查询";
         this.placeholder = "请输入 男/女 进行查询";
         this.index = 2;
+      }
+      if (index === 3) {
+        this.type = "当前按班级查询";
+        this.placeholder = "请输入 班级 进行查询";
+        this.index = 3;
       }
     },
     onChange() {
@@ -200,6 +215,13 @@ export default {
         } else {
           this.$message.warning(`按性别查询只能输入 男 / 女 !`);
         }
+      }else if(this.index === 3) {
+        // 按班级进行查询
+        let d = await getClassByInfo(value);
+        if (d.data.length === 0) {
+          this.$message.error(`没有查询到班级为： ${value} 的学生信息!`);
+        }
+        this.setShowInfo(d);
       }
     },
     setShowInfo(d) {

@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import md5 from 'js-md5';
 import Mantle from "../components/Mantle.vue";
 import { register } from "../api/index.js";
 export default {
@@ -62,9 +63,10 @@ export default {
         this.$message.warning("两次密码不一致哦!");
       } else {
         //进行注册
+        let md5P = md5(this.userPassword);
         let res = await register({
           name: this.userName,
-          password: this.userPassword
+          password: md5P
         });
         if (res.data === 1) {
           this.$message.success("注册成功! 可以登录咯");

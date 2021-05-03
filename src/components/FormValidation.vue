@@ -35,6 +35,18 @@
     <a-form-model-item
       :style="{ color: themeColor.color }"
       has-feedback
+      label="班级"
+      prop="class"
+    >
+      <a-input
+        v-model="ruleForm.class"
+        type="text"
+        autocomplete="off"
+      />
+    </a-form-model-item>
+    <a-form-model-item
+      :style="{ color: themeColor.color }"
+      has-feedback
       label="邮箱"
       prop="email"
     >
@@ -100,7 +112,8 @@ export default {
           id: "",
           email: "",
           phone: "",
-          address: ""
+          address: "",
+          class:"",
         };
       }
     }
@@ -120,10 +133,10 @@ export default {
       if (!value) {
         return callback(new Error("请输入年龄"));
       }
-      if (value < 18) {
-        callback(new Error("年龄必须大于18"));
-      } else if (value > 100) {
-        callback(new Error("年龄不能大于100"));
+      if (value < 12) {
+        callback(new Error("年龄必须大于12"));
+      } else if (value > 60) {
+        callback(new Error("年龄不能大于60"));
       } else {
         callback();
       }
@@ -138,8 +151,15 @@ export default {
     let checkID = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请输入唯一学号"));
-      } else if (value.length > 10) {
-        callback(new Error("学号不能大于10位数哦"));
+      } else if (value.length > 12) {
+        callback(new Error("学号不能大于12位数哦"));
+      } else {
+        callback();
+      }
+    };
+    let checkClass = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入学生所属班级"));
       } else {
         callback();
       }
@@ -181,7 +201,8 @@ export default {
         age: [{ validator: checkAge, trigger: "change" }],
         email: [{ validator: checkEmail, trigger: "change" }],
         phone: [{ validator: checkPhone, trigger: "change" }],
-        address: [{ validator: checkAddress, trigger: "change" }]
+        address: [{ validator: checkAddress, trigger: "change" }],
+        class: [{ validator: checkClass, trigger: "change" }],
       },
       layout: {
         labelCol: { span: 6 },
@@ -232,6 +253,9 @@ export default {
 .btn {
   -webkit-box-reflect: below 15px -webkit-linear-gradient(top, rgba(0, 0, 0, 0)
         30%, rgba(0, 0, 0, 0.5) 125%);
+}
+.ant-form-item-label > label {
+  color: auto;
 }
 @media screen and (max-width: 480px) {
   .ant-modal-wrap {

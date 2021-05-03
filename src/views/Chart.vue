@@ -1,16 +1,20 @@
 <template>
   <div class="chart">
-    <div class="address">
-      <h3>地址分布</h3>
-      <ve-pie :data="chartData1"></ve-pie>
-    </div>
-    <div class="sex">
-      <h3>男女比例</h3>
-      <ve-pie :data="chartData2"></ve-pie>
+    <div class="class">
+      <h3>班级人数折线图</h3>
+      <ve-line :data="chartData3"></ve-line>
     </div>
     <div class="age">
       <h3>年龄分布柱状图</h3>
       <ve-bar :data="chartData" :settings="chartSettings"></ve-bar>
+    </div>
+    <div class="sex">
+      <h3>男女比例</h3>
+      <ve-ring :data="chartData2"></ve-ring>
+    </div>
+    <div class="address">
+      <h3>地址分布</h3>
+      <ve-pie :data="chartData1"></ve-pie>
     </div>
   </div>
 </template>
@@ -23,21 +27,21 @@ export default {
       metrics: ["人数"],
       dataOrder: {
         label: "人数",
-        order: "desc"
-      }
+        order: "desc",
+      },
     };
     return {
       // 年龄比例
       chartData: {
         columns: ["age", "人数"],
         rows: [
-          { age: "18", 人数: 1393 },
-          { age: "19", 人数: 3530 },
-          { age: "20", 人数: 2923 },
-          { age: "21", 人数: 1723 },
-          { age: "22", 人数: 3792 },
-          { age: "23", 人数: 4593 }
-        ]
+          // { age: "18", 人数: 1393 },
+          // { age: "19", 人数: 3530 },
+          // { age: "20", 人数: 2923 },
+          // { age: "21", 人数: 1723 },
+          // { age: "22", 人数: 3792 },
+          // { age: "23", 人数: 4593 },
+        ],
       },
       // 地址分布
       chartData1: {
@@ -46,16 +50,28 @@ export default {
           // { 'address': "南京", 'num': 1393 },
           // { 'address': "南京", 'num': 1393 },
           // { 'address': "南京", 'num': 1393 }, // 根据请求来的数据 生成该对象格式 进行渲染
-        ]
+        ],
       },
       // 男女比例
       chartData2: {
         columns: ["sex", "num"],
         rows: [
           { sex: "男", num: 1393 },
-          { sex: "女", num: 3530 }
-        ]
-      }
+          { sex: "女", num: 3530 },
+        ],
+      },
+      // 班级分类
+      chartData3: {
+        columns: ["class","人数"],
+        rows: [
+          { class: '1班', '人数': '20' },
+          { class: '2班', '人数': '30' },
+          { class: '3班', '人数': '10' },
+          { class: '4班', '人数': '15' },
+          { class: '5班', '人数': '25' },
+          { class: '6班', '人数': '10' },
+        ],
+      },
     };
   },
   mounted() {
@@ -79,11 +95,11 @@ export default {
       let data1 = []; // 住址
       let data2 = []; // 男女生
       let data3 = []; // 年龄
-      res.data.map(item => {
+      res.data.map((item) => {
         let hasAddress = false;
         let hasSex = false;
         let hasAge = false;
-        data1.map(item2 => {
+        data1.map((item2) => {
           // 住址1
           if (item.address === item2.address) {
             hasAddress = true;
@@ -93,11 +109,11 @@ export default {
         if (!hasAddress) {
           data1.push({
             address: item.address,
-            num: 1
+            num: 1,
           });
         }
 
-        data2.map(item2 => {
+        data2.map((item2) => {
           // 性别2
           if (item.sex == item2.sex) {
             hasSex = true;
@@ -107,11 +123,11 @@ export default {
         if (!hasSex) {
           data2.push({
             sex: item.sex,
-            num: 1
+            num: 1,
           });
         }
         // 年龄3
-        data3.map(item2 => {
+        data3.map((item2) => {
           if (item.age == item2.age) {
             hasAge = true;
             item2["人数"]++;
@@ -120,12 +136,12 @@ export default {
         if (!hasAge) {
           data3.push({
             age: item.age,
-            人数: 1
+            人数: 1,
           });
         }
       });
       this.chartData1.rows = data1;
-      data2.forEach(item => {
+      data2.forEach((item) => {
         if (item.sex == 0) {
           item.sex = "男";
         } else {
@@ -133,10 +149,10 @@ export default {
         }
       });
       this.chartData2.rows = data2;
-      data3.forEach(item => (item.age = item.age + "岁"));
+      data3.forEach((item) => (item.age = item.age + "岁"));
       this.chartData.rows = data3;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -144,7 +160,8 @@ export default {
 .chart {
   display: flex;
   justify-content: space-around;
-  margin-top: 66px;
+  align-items: center;
+  height: 100%;
   .address {
     width: 300px;
   }
@@ -152,6 +169,9 @@ export default {
     width: 300px;
   }
   .age {
+    width: 300px;
+  }
+  .class {
     width: 300px;
   }
   h3 {

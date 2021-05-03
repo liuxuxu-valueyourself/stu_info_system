@@ -70,6 +70,7 @@ export default {
         root: false
       });
       localStorage.removeItem("userName");
+      localStorage.removeItem("root");
       this.toLogin();
       this.$message.success("退出成功!");
     },
