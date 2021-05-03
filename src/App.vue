@@ -1,32 +1,96 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+  <div class="app">
+    <MainTop />
+    <div class="main">
+      <div class="main-menu">
+        <MainNavigation />
+      </div>
+      <div
+        class="main-content"
+        :style="{ color: themeColor.color, background: themeColor.background }"
+      >
+        <!-- <transition mode="out-in"> -->
+        <router-view></router-view>
+        <!-- </transition> -->
+        <!-- <transition name="router-fade" mode="out-in">
+          <keep-alive>
+            <router-view v-if="$route.meta.keepAlive"></router-view>
+          </keep-alive>
+        </transition>
+        <transition name="router-fade" mode="out-in">
+          <router-view v-if="!$route.meta.keepAlive"></router-view>
+        </transition> -->
+      </div>
     </div>
-    <router-view />
   </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import MainNavigation from "./components/MainNavigation.vue";
+import MainTop from "./components/MainTop.vue";
+import { mapState } from "vuex";
 
-#nav {
-  padding: 30px;
+const userName = localStorage.getItem("userName");
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
+export default {
+  components: {
+    MainNavigation,
+    MainTop
+  },
+  computed: {
+    ...mapState(["themeColor"])
+  },
+  mounted() {
+    if (!userName) {
+      console.log("OK");
+      this.$router.push({
+        name: "Login"
+      });
+      return;
     }
+    this.$store.commit("changeName", {
+      name: userName
+    });
+  }
+};
+</script>
+<style scoped lang="scss">
+.app {
+  overflow: hidden;
+}
+.main {
+  display: flex;
+  .main-menu {
+    // width: 200px;
+  }
+  .main-content {
+    flex-grow: 1;
   }
 }
+
+@media screen and (max-width: 480px) {
+  div.main-content {
+    width: 100vw;
+    position: absolute;
+    overflow-x: auto;
+    margin-top: 17vw;
+  }
+  div.main {
+    position: fixed;
+    top: 10vw;
+    width: 100vw;
+    height: 10vw;
+  }
+}
+</style>
+<style scoped>
+/* .v-enter {
+  transform: translateY(-750px);
+}
+.v-enter-active {
+  transition: all 0.3s;
+}
+.v-enter-to {
+  transform: translateY(0px);
+} */
 </style>
